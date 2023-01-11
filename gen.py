@@ -30,4 +30,4 @@ def gen(id, seed, T):
     np.save(path_hobs, hobs)
 
 if __name__ == "__main__":
-    gen(0, 2023, 10000)
+    gen(0, 2023, 1000000)
