@@ -11,7 +11,7 @@ def sim(id, T, B):
     assert len(hobs) == T
 
     epsilon = 1.0/(math.sqrt(T))
-    delta = 1.0/T
+    delta = 50.0/(math.sqrt(T))
     
     Payoff1 = Full_Constrained(T=T, B=B, values=values, hobs=hobs, epsilon = epsilon, delta = delta)
     np.save(path+"Full_Constrained.npy", Payoff1)
@@ -22,4 +22,4 @@ def sim(id, T, B):
     return 0
 
 if __name__ == "__main__":
-    sim(0, 10000, 2000)  #(id, T, B)
+    sim(0, 1000000, 10000)  #(id, T, B)
