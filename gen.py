@@ -1,50 +1,59 @@
 import numpy as np
 import os
 import math
-def gen(id, seed, T):
-    path = os.getcwd()+"/output/"+str(id)+"/"
+from config import args
+def gen(data_id, seed, T, distribution, param_1, param_2, mu, sigma):
+    path = os.getcwd()+"/data/"+str(data_id)+"/"
     if os.path.exists(path) == False:
         os.makedirs(path)
-    #torch.manual_seed(seed)
+
     np.random.seed(seed)
 
-    #NORMAL DISTRIBUTION
-    '''
-    values = []
-    while len(values) < T:
-        value = np.random.normal(0.5, 0.1)
-        if value>=0.0 and value <= 1.0:
-            values.append(value)
-    values = np.array(values)
-    '''
+    if distribution == 'n':
+        #NORMAL DISTRIBUTION
+        values = []
+        while len(values) < T:
+            #value = np.random.normal(0.6, 0.1)
+            value = np.random.normal(param_1, param_2)
+            if value>=0.0 and value <= 1.0:
+                values.append(value)
+        values = np.array(values)
     
-    #UNIFORM DISTRIBUTION
-    values = np.random.uniform(0.25, 1.0, T)
+    if distribution == 'u':
+        #UNIFORM DISTRIBUTION
+        #values = np.random.uniform(0.25, 1.0, T)
+        values = np.random.uniform(param_1, param_2, T)
             #hobs = np.random.uniform(0.2, 0.8, T)
 
-    '''
-    #LOGARITHMIC NORMAL
-    
-    values = []
-    while len(values) < T:
-        logv = np.random.normal(-0.5, 0.1)
-        value = math.pow(math.e, logv)
-        if value>=0.0 and value <= 1.0:
-            values.append(value)
-    values = np.array(values)
-    '''
+    if distribution == 'l':
+        #LOGARITHMIC NORMAL DISTRIBUTION
+        values = []
+        while len(values) < T:
+            #logv = np.random.normal(-0.4, 0.1)
+            logv = np.random.normal(param_1, param_2)
+            value = math.pow(math.e, logv)
+            if value>=0.0 and value <= 1.0:
+                values.append(value)
+        values = np.array(values)
 
     hobs = []
     while len(hobs) < T:
-        hob = np.random.normal(0.4, 0.1)
+        hob = np.random.normal(mu, sigma)
         if hob>=0.0 and hob <= 1.0:
             hobs.append(hob)   
     hobs = np.array(hobs)
 
-    path_values = path+"values.npy"
-    path_hobs = path + "hobs.npy"
-    np.save(path_values, values)
-    np.save(path_hobs, hobs)
+    np.save(path+"values.npy", values)
+    np.save(path + "hobs.npy", hobs)
     
 if __name__ == "__main__":
-    gen("test", 2023, 1000000) #Seed = 2022+id
+    print(args)
+    data_id = args.data
+    seed = args.seed
+    T = args.T
+    distribution = args.distribution
+    param1 = args.param1
+    param2 = args.param2
+    mu = args.mu
+    sigma = args.sigma
+    gen(data_id = data_id, seed = seed, T = T, distribution=distribution, param_1=param1, param_2=param2, mu=mu, sigma=sigma) 
