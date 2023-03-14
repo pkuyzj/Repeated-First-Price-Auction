@@ -13,7 +13,6 @@ def gen(data_id, seed, T, distribution, param_1, param_2, mu, sigma):
         #NORMAL DISTRIBUTION
         values = []
         while len(values) < T:
-            #value = np.random.normal(0.6, 0.1)
             value = np.random.normal(param_1, param_2)
             if value>=0.0 and value <= 1.0:
                 values.append(value)
@@ -21,15 +20,12 @@ def gen(data_id, seed, T, distribution, param_1, param_2, mu, sigma):
     
     if distribution == 'u':
         #UNIFORM DISTRIBUTION
-        #values = np.random.uniform(0.25, 1.0, T)
         values = np.random.uniform(param_1, param_2, T)
-            #hobs = np.random.uniform(0.2, 0.8, T)
 
     if distribution == 'l':
         #LOGARITHMIC NORMAL DISTRIBUTION
         values = []
         while len(values) < T:
-            #logv = np.random.normal(-0.4, 0.1)
             logv = np.random.normal(param_1, param_2)
             value = math.pow(math.e, logv)
             if value>=0.0 and value <= 1.0:
