@@ -1,35 +1,33 @@
 import numpy as np
-import os
-import math
 from algorithm import *
+from config import args
 
-def sim(id, T, B, l3 = 0):
-    path = "./output/"+str(id)+"/"
-    values = np.load(path+"values.npy")
-    assert len(values) == T
-    hobs = np.load(path+"hobs.npy")
-    assert len(hobs) == T
+def sim(data_id, alg, B, M, K, epsilon, delta):
+    data_path = "./data/"+str(data_id)+"/"
+    values = np.load(data_path+"values.npy")
+    hobs = np.load(data_path+"hobs.npy")
+    T = len(values)
 
-    epsilon = 1.0/(math.sqrt(T))
-    delta = 0.01
-    
-    if l3 == 1:
-        Payoff3, Lambdas = Partial_Constrained(T=T, B=B, values=values, hobs=hobs, epsilon = epsilon, delta = delta)
-        np.save(path + "Partial_Constrained.npy", Payoff3)
-        np.save(path+"Lambda.npy", Lambdas)
-        return 0
+    if alg =='FC':
+        average = Full_Constrained(T=T, B=B, M=M, K=K, values = values, hobs = hobs, epsilon=epsilon)
+    if alg =='FU':
+        average = Full_Unconstrained(T=T, B=B, M=M, K=K, values = values, hobs=hobs)
+    if alg =='PC':
+        average = Partial_Constrained(T=T, B=B, M=M, K=K, values=values, hobs=hobs, epsilon=epsilon, delta=delta)
+    if alg =='PU':
+        average = Partial_Unconstrained(T=T, B=B, M=M, K=K, values=values, hobs=hobs, delta=delta)
 
-    Payoff1 = Full_Constrained(T=T, B=B, values=values, hobs=hobs, epsilon = epsilon, delta = delta)
-    np.save(path+"Full_Constrained.npy", Payoff1)
-    Payoff2 = Full_Unconstrained(T=T, B=B, values=values, hobs=hobs, epsilon = epsilon, delta = delta)
-    np.save(path+"Full_Unconstrained.npy", Payoff2)
-    Payoff3, Lambdas = Partial_Constrained(T=T, B=B, values=values, hobs=hobs, epsilon = epsilon, delta = delta)
-    np.save(path + "Partial_Constrained.npy", Payoff3)
-    np.save(path+"Lambda.npy", Lambdas)
-    Payoff4 = Partial_Unconstrained(T=T, B=B, values=values, hobs=hobs, epsilon = epsilon, delta = delta)
-    np.save(path+ "Partial_Unconstrained.npy", Payoff4)
-    
-    return Payoff1, Payoff2, Payoff3, Payoff4
+    plt.plot([idx for idx in range(T)], average)
+    plt.show()
+
+    return
 
 if __name__ == "__main__":
-    sim("test", 1000000, 10000, 1)
+    data_id = args.data
+    alg = args.alg
+    B = args.B
+    M = args.M
+    K = args.K
+    epsilon = args.epsilon
+    delta = args.delta
+    sim(data_id=data_id, B=B, M=M, K=K, alg = alg, epsilon=epsilon, delta=delta)
